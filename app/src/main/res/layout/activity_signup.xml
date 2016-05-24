@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.awesometic.facetalk.SignupActivity">
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signup_emailInput"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/signup_passwordInput" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signup_passwordInput"
+        android:layout_centerHorizontal="true"
+        android:inputType="textPassword"
+        android:hint="Password"
+        android:layout_below="@+id/signup_emailInput" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signup_nicknameInput"
+        android:layout_centerHorizontal="true"
+        android:hint="Nickname"
+        android:layout_below="@+id/signup_passwordInput" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signup_ageInput"
+        android:layout_centerHorizontal="true"
+        android:inputType="number"
+        android:digits="0123456789"
+        android:hint="Age"
+        android:layout_below="@+id/signup_nicknameInput" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:text="Sign Up"
+        android:id="@+id/signup_signupButton"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/signup_ageInput"
+        android:layout_alignEnd="@+id/signup_passwordInput" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignBottom="@+id/signup_signupButton"
+        android:layout_alignStart="@+id/signup_ageInput"
+        android:id="@+id/signup_genderRadioGroup">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/signup_maleRadioButton"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/signup_femaleRadioButton"
+            android:checked="false" />
+    </RadioGroup>
+
+</RelativeLayout>
