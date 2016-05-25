@@ -105,19 +105,21 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean loginValidate(String email, String password) {
         int useridx = dbConn.loginValidation(email, password);
-        Log.d(LogTag, "here!! useridx: " + useridx);
 
         if (useridx == -1) {
             Toast.makeText(LoginActivity.this, "Not a member? Sign-up", Toast.LENGTH_LONG).show();
-
             return false;
+
         } else if (useridx == 0) {
             Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_LONG).show();
-
             return false;
+
+        } else if (useridx == -9){
+            Toast.makeText(LoginActivity.this, "Something wrong...", Toast.LENGTH_LONG).show();
+            return false;
+
         } else {
             Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
-
             return true;
         }
     }

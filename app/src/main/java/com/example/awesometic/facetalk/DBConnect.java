@@ -18,6 +18,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by Awesometic on 2016-05-24.
@@ -36,9 +37,29 @@ public class DBConnect {
         activity = _activity;
     }
 
-    public boolean addUser(String email, String password, String nickname, int age, String gender) {
+    public int addUser(String email, String password, String nickname, int age, String gender) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", email);
+            jsonObject.put("password", password);
+            jsonObject.put("nickname", nickname);
+            jsonObject.put("age", String.valueOf(age));
+            jsonObject.put("gender", gender);
+            array.put(jsonObject);
 
-        return true;
+            StringBuilder result = new PostClass("addUser", jsonObject).execute().get();
+            int resultCode = Integer.parseInt(result.toString());
+
+            return resultCode;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return wrongCode;
+        }
     }
 
     public String[] getMessages() {
@@ -73,15 +94,16 @@ public class DBConnect {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
             array.put(jsonObject);
-            Log.e("json parser", "=================="+array.toString());
 
-            Log.d(LogTag, "here");
-            new PostClass("loginValidation", jsonObject).execute();
+            StringBuilder result = new PostClass("loginValidation", jsonObject).execute().get();
+            int useridx = Integer.parseInt(result.toString());
 
-            // test
-            return 0;
+            return useridx;
 
         } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
             e.printStackTrace();
             return wrongCode;
         }
@@ -89,7 +111,7 @@ public class DBConnect {
 
     // http://derveljunit.tistory.com/71
     // http://arabiannight.tistory.com/entry/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9CAndroid-AsyncTask-%EC%82%AC%EC%9A%A9%EB%B2%95
-    private class PostClass extends AsyncTask<String, Void, Void> {
+    private class PostClass extends AsyncTask<String, Void, StringBuilder> {
         StringBuilder responseOutput = new StringBuilder();
 
         String send_callSign;
@@ -101,15 +123,15 @@ public class DBConnect {
         }
 
         @Override
-        protected Void doInBackground(String... params) {
-
+        protected StringBuilder doInBackground(String... params) {
+            //http://egloos.zum.com/javalove/v/147447
             try {
                 URL url = new URL("http://219.240.6.172:50038/android/app_dbconn.php");
                 HttpURLConnection connection =
                         (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
-                connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
+                connection.setRequestProperty("Accept-Charset","UTF-8");
                 connection.setDoOutput(true);
 
                 //Data to post - replace values from textView
@@ -133,17 +155,18 @@ public class DBConnect {
                 br.close();
 
                 Log.d(LogTag, "responseOutput: " + responseOutput.toString());
-
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, responseOutput.toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                activity.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(context, responseOutput.toString(),Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
-            catch (Exception e){ }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
-            return null;
+            return responseOutput;
         }
 
         protected void onPostExecute() {
