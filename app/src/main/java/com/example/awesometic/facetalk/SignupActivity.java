@@ -12,7 +12,7 @@ public class SignupActivity extends AppCompatActivity {
 
     final static String LogTag = "Awe_SignupActivity";
     private Singleton single = Singleton.getInstance();
-    private DBHelper dbHelper = new DBHelper(SignupActivity.this, single.getDBName(), null, single.getDBVersion());
+    private DBConnect dbConn = new DBConnect(this.getApplicationContext(), SignupActivity.this);
 
     EditText emailInput, passwordInput, nicknameInput, ageInput;
     RadioButton maleRadioButton, femaleRadioButton;
@@ -51,7 +51,7 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(SignupActivity.this, "Check your gender", Toast.LENGTH_LONG).show();
                         }
 
-                        dbHelper.insertUser(email, password, nickname, age, gender);
+                        dbConn.addUser(email, password, nickname, age, gender);
                         break;
                 }
             }

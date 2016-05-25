@@ -17,7 +17,7 @@ public class LoginActivity extends AppCompatActivity {
 
     final static String LogTag = "Awe_LoginActivity";
     private Singleton single = Singleton.getInstance();
-    private DBHelper dbHelper = new DBHelper(LoginActivity.this, single.getDBName(), null, single.getDBVersion());
+    private DBConnect dbConn = new DBConnect(LoginActivity.this, LoginActivity.this);
 
     EditText emailInput, passwordInput;
     Button loginButton, signupButton;
@@ -59,14 +59,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // If autoLogin checked, get user login information
-        if (pref.getBoolean("autoLogin", true)) {
-            emailInput.setText(pref.getString("email", ""));
-            passwordInput.setText(pref.getString("password", ""));
-            autoLoginCheckBox.setChecked(true);
-
-            gotoMainActivity();
-            finish();
-        }
+//        if (pref.getBoolean("autoLogin", true)) {
+//            Log.d(LogTag, "email: " + pref.getString("email", "") + "\tpassword: " + pref.getString("password", ""));
+//            emailInput.setText(pref.getString("email", ""));
+//            passwordInput.setText(pref.getString("password", ""));
+//            autoLoginCheckBox.setChecked(true);
+//        }
     }
 
     Button.OnClickListener mClickListener = new View.OnClickListener() {
@@ -85,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
                             prefEditor.putString("password", password);
                             prefEditor.putBoolean("autoLogin", true);
                             prefEditor.apply();
-                            prefEditor.commit();
                         }
 
                         single.setCurrentUserEmail(email);
@@ -107,24 +104,21 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     private boolean loginValidate(String email, String password) {
-        boolean emailValid = dbHelper.emailValidate(email);
+        int useridx = dbConn.loginValidation(email, password);
+        Log.d(LogTag, "here!! useridx: " + useridx);
 
-        if (emailValid) {
-            boolean passwordValid = dbHelper.passwordValidate(email, password);
-
-            if (passwordValid) {
-                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
-
-                return true;
-            } else {
-                Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_LONG).show();
-
-                return false;
-            }
-        } else {
+        if (useridx == -1) {
             Toast.makeText(LoginActivity.this, "Not a member? Sign-up", Toast.LENGTH_LONG).show();
 
             return false;
+        } else if (useridx == 0) {
+            Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_LONG).show();
+
+            return false;
+        } else {
+            Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
+
+            return true;
         }
     }
 

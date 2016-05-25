@@ -8,15 +8,11 @@ package com.example.awesometic.facetalk;
 public class Singleton {
     private volatile static Singleton uniqueInstance;
 
-    private String DBName;
-    private int DBVersion;
     private int currentUserIdx;
     private String currentUserEmail;
     private String currentUserNickname;
 
     private Singleton() {
-        DBName = "FaceTalk.db";
-        DBVersion = 1;
         currentUserIdx = 0;
         currentUserEmail = "";
         currentUserNickname = "";
@@ -34,14 +30,6 @@ public class Singleton {
         return uniqueInstance;
     }
 
-    protected String getDBName() {
-        return DBName;
-    }
-
-    protected int getDBVersion() {
-        return DBVersion;
-    }
-
     protected int getCurrentUserIdx() {
         return currentUserIdx;
     }
@@ -52,14 +40,6 @@ public class Singleton {
 
     protected String getCurrentUserNickname() {
         return currentUserNickname;
-    }
-
-    protected void setDBName(String newDBName) {
-        DBName = newDBName;
-    }
-
-    protected void setDBVersion(int newDBVersion) {
-        DBVersion = newDBVersion;
     }
 
     protected void setCurrentUserIdx(int newIdx) {
