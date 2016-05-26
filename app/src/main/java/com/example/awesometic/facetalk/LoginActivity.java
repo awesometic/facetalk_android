@@ -19,6 +19,8 @@ public class LoginActivity extends AppCompatActivity {
     private Singleton single = Singleton.getInstance();
     private DBConnect dbConn = new DBConnect(LoginActivity.this, LoginActivity.this);
 
+    public static Activity loginActivity;
+
     EditText emailInput, passwordInput;
     Button loginButton, signupButton;
     CheckBox autoLoginCheckBox;
@@ -30,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginActivity = LoginActivity.this;
 
         emailInput = (EditText) findViewById(R.id.login_emailInput);
         passwordInput = (EditText) findViewById(R.id.login_passwordInput);
@@ -58,42 +62,50 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // If success sign up, auto fill out the email EditText
+        Intent intent = getIntent();
+        String intentExtra_email = intent.getStringExtra("signup_email");
+        emailInput.setText(intentExtra_email);
+
         // If autoLogin checked, get user login information
-//        if (pref.getBoolean("autoLogin", true)) {
-//            Log.d(LogTag, "email: " + pref.getString("email", "") + "\tpassword: " + pref.getString("password", ""));
-//            emailInput.setText(pref.getString("email", ""));
-//            passwordInput.setText(pref.getString("password", ""));
-//            autoLoginCheckBox.setChecked(true);
-//        }
+        if (pref.getBoolean("autoLogin", true)) {
+            Log.d(LogTag, "email: " + pref.getString("email", "") + "\tpassword: " + pref.getString("password", ""));
+            emailInput.setText(pref.getString("email", ""));
+            passwordInput.setText(pref.getString("password", ""));
+            autoLoginCheckBox.setChecked(true);
+        }
     }
 
     Button.OnClickListener mClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.login_loginButton:
-                    // If autoLogin unchecked
                     String email = emailInput.getText().toString();
                     String password = passwordInput.getText().toString();
-                    Boolean validation = loginValidate(email, password);
 
-                    if (validation) {
-                        if (autoLoginChecked) {
-                            // If autoLogin checked, save values
-                            prefEditor.putString("email", email);
-                            prefEditor.putString("password", password);
-                            prefEditor.putBoolean("autoLogin", true);
-                            prefEditor.apply();
-                        }
-
-                        single.setCurrentUserEmail(email);
-
-                        gotoMainActivity();
-                        finish();
+                    if (email.length() == 0 || password.length() == 0) {
+                        Toast.makeText(LoginActivity.this, "Type your email or password!", Toast.LENGTH_LONG).show();
+                        break;
                     } else {
-                        passwordInput.setText("");
-                        autoLoginCheckBox.setChecked(false);
-                    }
 
+                        Boolean validation = loginValidate(email, password);
+
+                        if (validation) {
+                            if (autoLoginChecked) {
+                                // If autoLogin checked, save values
+                                prefEditor.putString("email", email);
+                                prefEditor.putString("password", password);
+                                prefEditor.putBoolean("autoLogin", true);
+                                prefEditor.apply();
+                            }
+
+                            gotoMainActivity();
+                            finish();
+                        } else {
+                            passwordInput.setText("");
+                            autoLoginCheckBox.setChecked(false);
+                        }
+                    }
                     break;
                 case R.id.login_signupButton:
                     gotoSignupActivity();
@@ -105,6 +117,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean loginValidate(String email, String password) {
         int useridx = dbConn.loginValidation(email, password);
+
+        single.setCurrentUserIdx(useridx);
+        single.setCurrentUserEmail(email);
+        single.setCurrentUserNickname(dbConn.getNickname(useridx));
+        Log.d(LogTag, "Current useridx: " + single.getCurrentUserIdx() + "\temail: " + single.getCurrentUserEmail() + "\tnickname: " + single.getCurrentUserNickname());
 
         if (useridx == -1) {
             Toast.makeText(LoginActivity.this, "Not a member? Sign-up", Toast.LENGTH_LONG).show();

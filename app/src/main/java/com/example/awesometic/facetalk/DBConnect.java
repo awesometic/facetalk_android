@@ -1,27 +1,18 @@
 package com.example.awesometic.facetalk;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.JsonWriter;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +25,7 @@ import java.net.URLEncoder;
 public class DBConnect {
 
     final static String LogTag = "Awe_DBConnect";
+
     int wrongCode = -9;
 
     Context context;
@@ -75,9 +67,54 @@ public class DBConnect {
         return new String[] { };
     }
 
-    public String getFriend() {
+    // http://stackoverflow.com/questions/34784394/android-parse-php-json-encode-to-java
+    public JSONArray getFriend(int useridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getFriend");
+            jsonObject.put("useridx", useridx);
+            array.put(jsonObject);
 
-        return new String();
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            result.toString().replace("\"", "\\\"");
+            result.insert(0, "{ \"friends\":");
+            result.insert(result.length(), "}");
+
+            JSONObject friends = new JSONObject(result.toString());
+            JSONArray friendsJsonArray = friends.getJSONArray("friends");
+
+            return friendsJsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int getFriendCount(int useridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getFriendCount");
+            jsonObject.put("useridx", useridx);
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            int count = Integer.parseInt(result.toString());
+
+            return count;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return wrongCode;
+        }
     }
 
     public String[] getAllFriends() {
@@ -85,9 +122,26 @@ public class DBConnect {
         return new String[] { };
     }
 
-    public String getNickname() {
+    public String getNickname(int useridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getNickname");
+            jsonObject.put("useridx", useridx);
+            array.put(jsonObject);
 
-        return new String();
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            String nickname = result.toString();
+
+            return nickname;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String[] getAllNicknames() {
@@ -143,7 +197,7 @@ public class DBConnect {
 
                 //Data to post - replace values from textView
                 String urlParameters = "json=" + URLEncoder.encode(send_JSONObject.toString(), "UTF-8");
-                Log.d(LogTag, urlParameters);
+                Log.d(LogTag, "URL Params: " + urlParameters);
 
                 //Post
                 DataOutputStream dStream =

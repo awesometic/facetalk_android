@@ -1,5 +1,6 @@
 package com.example.awesometic.facetalk;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,29 +39,43 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.signup_signupButton:
-                        if (maleRadioButton.isChecked() || femaleRadioButton.isChecked()) {
-                            email = emailInput.getText().toString();
-                            password = passwordInput.getText().toString();
-                            nickname = nicknameInput.getText().toString();
-                            age = Integer.parseInt(ageInput.getText().toString());
+                        email = emailInput.getText().toString();
+                        password = passwordInput.getText().toString();
+                        nickname = nicknameInput.getText().toString();
+                        String str_age = ageInput.getText().toString();
+
+                        if (email.length() == 0 || password.length() == 0 || nickname.length() == 0 || str_age.length() == 0) {
+                            Toast.makeText(SignupActivity.this, "Fill out the form", Toast.LENGTH_LONG).show();
+                            break;
+
+                        } else if (!maleRadioButton.isChecked() && !femaleRadioButton.isChecked()) {
+                            Toast.makeText(SignupActivity.this, "Check your gender", Toast.LENGTH_LONG).show();
+                            break;
+
+                        } else {
+                            age = Integer.parseInt(str_age);
                             if (maleRadioButton.isChecked())
                                 gender = maleRadioButton.getText().toString();
                             else
                                 gender = femaleRadioButton.getText().toString();
-                        } else {
-                            Toast.makeText(SignupActivity.this, "Check your gender", Toast.LENGTH_LONG).show();
+
+                            int resultCode = dbConn.addUser(email, password, nickname, age, gender);
+                            if (resultCode == 1) {
+                                Toast.makeText(SignupActivity.this, "Register success! Login your account", Toast.LENGTH_LONG).show();
+                            } else if (resultCode == -1 || resultCode == -9) {
+                                Toast.makeText(SignupActivity.this, "Register fail!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(SignupActivity.this, "Something wrong.. resultCode: " + resultCode, Toast.LENGTH_LONG).show();
+                            }
+
+                            LoginActivity loginActivity = (LoginActivity) LoginActivity.loginActivity;
+                            loginActivity.finish();
+                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                            intent.putExtra("signup_email", email);
+                            startActivity(intent);
+                            finish();
                             break;
                         }
-
-                        int resultCode = dbConn.addUser(email, password, nickname, age, gender);
-                        if (resultCode == 1) {
-                            Toast.makeText(SignupActivity.this, "Register success! Login your account", Toast.LENGTH_LONG).show();
-                        } else if (resultCode == -1 || resultCode == -9) {
-                            Toast.makeText(SignupActivity.this, "Register fail!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(SignupActivity.this, "Something wrong.. resultCode: " + resultCode, Toast.LENGTH_LONG).show();
-                        }
-                        break;
                 }
             }
         });
