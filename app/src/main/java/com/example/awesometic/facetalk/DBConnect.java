@@ -8,15 +8,22 @@ import android.util.JsonWriter;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -41,6 +48,7 @@ public class DBConnect {
         try {
             JSONArray array = new JSONArray();
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "addUser");
             jsonObject.put("email", email);
             jsonObject.put("password", password);
             jsonObject.put("nickname", nickname);
@@ -48,7 +56,7 @@ public class DBConnect {
             jsonObject.put("gender", gender);
             array.put(jsonObject);
 
-            StringBuilder result = new PostClass("addUser", jsonObject).execute().get();
+            StringBuilder result = new PostClass(jsonObject).execute().get();
             int resultCode = Integer.parseInt(result.toString());
 
             return resultCode;
@@ -91,11 +99,12 @@ public class DBConnect {
         try {
             JSONArray array = new JSONArray();
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "loginValidation");
             jsonObject.put("email", email);
             jsonObject.put("password", password);
             array.put(jsonObject);
 
-            StringBuilder result = new PostClass("loginValidation", jsonObject).execute().get();
+            StringBuilder result = new PostClass(jsonObject).execute().get();
             int useridx = Integer.parseInt(result.toString());
 
             return useridx;
@@ -114,11 +123,9 @@ public class DBConnect {
     private class PostClass extends AsyncTask<String, Void, StringBuilder> {
         StringBuilder responseOutput = new StringBuilder();
 
-        String send_callSign;
         JSONObject send_JSONObject;
 
-        public PostClass(String callSign, JSONObject jsonObj) {
-            send_callSign = callSign;
+        public PostClass(JSONObject jsonObj) {
             send_JSONObject = jsonObj;
         }
 
@@ -127,15 +134,16 @@ public class DBConnect {
             //http://egloos.zum.com/javalove/v/147447
             try {
                 URL url = new URL("http://219.240.6.172:50038/android/app_dbconn.php");
-                HttpURLConnection connection =
-                        (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
-                connection.setRequestProperty("Accept-Charset","UTF-8");
+                connection.setRequestProperty("Accept-Charset", "UTF-8");
                 connection.setDoOutput(true);
 
                 //Data to post - replace values from textView
-                String urlParameters = "callSign=" + send_callSign + "&json=" + send_JSONObject;
+                String urlParameters = "json=" + URLEncoder.encode(send_JSONObject.toString(), "UTF-8");
+                Log.d(LogTag, urlParameters);
 
                 //Post
                 DataOutputStream dStream =
@@ -144,26 +152,38 @@ public class DBConnect {
                 dStream.flush();
                 dStream.close();
 
-                //Accept response
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream()));
-                String line = "";
+                int responseCode = connection.getResponseCode();
+                Log.d(LogTag, "responseCode: " + responseCode);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    //Accept response
+                    BufferedReader br = new BufferedReader(
+                            new InputStreamReader(connection.getInputStream()));
+                    String line = "";
 
-                while((line = br.readLine()) != null ) {
-                    responseOutput.append(line);
-                }
-                br.close();
+                    while ((line = br.readLine()) != null) {
+                        responseOutput.append(line);
+                    }
+                    br.close();
 
-                Log.d(LogTag, "responseOutput: " + responseOutput.toString());
+                    Log.d(LogTag, "responseOutput: " + responseOutput.toString());
 //                activity.runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                        Toast.makeText(context, responseOutput.toString(),Toast.LENGTH_SHORT).show();
 //                    }
 //                });
-            }
-            catch (Exception e){
+                }
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
+                return null;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
             }
 
             return responseOutput;
