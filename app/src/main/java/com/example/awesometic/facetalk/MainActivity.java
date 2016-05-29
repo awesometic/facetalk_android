@@ -153,7 +153,11 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        setTitle(item.getTitle());
+        if (id == R.id.nav_home)
+            setTitle(R.string.app_name);
+        else
+            setTitle(item.getTitle());
+
         drawer.closeDrawers();
         return true;
     }
