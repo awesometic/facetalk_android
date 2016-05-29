@@ -64,8 +64,16 @@ public class LoginActivity extends AppCompatActivity {
 
         // If success sign up, auto fill out the email EditText
         Intent intent = getIntent();
-        String intentExtra_email = intent.getStringExtra("signup_email");
-        emailInput.setText(intentExtra_email);
+        emailInput.setText(intent.getStringExtra("signup_email"));
+
+        if (intent.getBooleanExtra("logout", false)) {
+            prefEditor.putString("email", "");
+            prefEditor.putString("password", "");
+            prefEditor.putBoolean("autoLogin", false);
+            prefEditor.apply();
+
+            autoLoginCheckBox.setChecked(true);
+        }
 
         // If autoLogin checked, get user login information
         if (pref.getBoolean("autoLogin", true)) {
@@ -73,6 +81,14 @@ public class LoginActivity extends AppCompatActivity {
             emailInput.setText(pref.getString("email", ""));
             passwordInput.setText(pref.getString("password", ""));
             autoLoginCheckBox.setChecked(true);
+
+            if (loginValidate(pref.getString("email", ""), pref.getString("password", ""))) {
+                gotoMainActivity();
+                finish();
+            } else {
+                passwordInput.setText("");
+                autoLoginCheckBox.setChecked(false);
+            }
         }
     }
 
