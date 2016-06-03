@@ -37,7 +37,7 @@
         <Button
             android:layout_width="150dp"
             android:layout_height="55dp"
-            android:text="Add"
+            android:text="submit"
             android:id="@+id/friend_manager_submit"
             android:textAllCaps="false"
             android:layout_alignParentBottom="true"

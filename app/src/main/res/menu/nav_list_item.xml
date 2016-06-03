@@ -12,10 +12,10 @@
             <menu>
                 <item
                     android:id="@+id/nav_add_friend"
-                    android:title="Add Friend" />
+                    android:title="Add Friends" />
                 <item
                     android:id="@+id/nav_remove_friend"
-                    android:title="Remove Friend" />
+                    android:title="Remove Friends" />
             </menu>
         </item>
     </group>
