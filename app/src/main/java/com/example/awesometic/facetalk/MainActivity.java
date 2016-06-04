@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_add_friend:
                 Toast.makeText(MainActivity.this, "add friend", Toast.LENGTH_LONG).show();
 
+                getFragmentManager().beginTransaction().detach(fragFriends).attach(fragFriends).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragFriends)
                         .commit();
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_remove_friend:
                 Toast.makeText(MainActivity.this, "remove friend", Toast.LENGTH_LONG).show();
 
+                getFragmentManager().beginTransaction().detach(fragFriends).attach(fragFriends).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragFriends)
                         .commit();
@@ -140,6 +142,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_setup:
                 Toast.makeText(MainActivity.this, "setup", Toast.LENGTH_LONG).show();
 
+                getFragmentManager().beginTransaction().detach(fragSetup).attach(fragSetup).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragSetup)
                         .commit();
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity
             default:
                 Toast.makeText(MainActivity.this, "friend nickname: " + item.getTitle(), Toast.LENGTH_LONG).show();
 
+                getFragmentManager().beginTransaction().detach(fragChat).attach(fragChat).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragChat)
                         .commit();

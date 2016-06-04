@@ -3,11 +3,14 @@ package com.example.awesometic.facetalk;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +30,8 @@ public class FriendsFragment extends Fragment {
         return fragment;
     }
 
-    public FriendsFragment() { }
+    public FriendsFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,18 +41,19 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_friends_management, container, false);
-
-        ListView lvFriends;
-        Button btnSubmit;
-
-        FriendsListViewAdapter adapter = new FriendsListViewAdapter(getActivity());
-
-        lvFriends = (ListView) rootView.findViewById(R.id.friend_manager_list);
-        lvFriends.setAdapter(adapter);
-        btnSubmit = (Button) rootView.findViewById(R.id.friend_manager_submit);
-
         try {
+            View rootView = inflater.inflate(R.layout.fragment_friends_management, container, false);
+
+            ListView lvFriends;
+            Button btnSubmit;
+
+            FriendsListViewAdapter adapter = new FriendsListViewAdapter(getActivity());
+
+            lvFriends = (ListView) rootView.findViewById(R.id.friend_manager_list);
+            lvFriends.setAdapter(adapter);
+            btnSubmit = (Button) rootView.findViewById(R.id.friend_manager_submit);
+            btnSubmit.setOnClickListener(mClickListener);
+
             if (getActivity().getTitle().equals("Add Friends")) {
                 btnSubmit.setText("Add");
 
@@ -73,4 +78,11 @@ public class FriendsFragment extends Fragment {
             return null;
         }
     }
+
+    Button.OnClickListener mClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Toast.makeText(getActivity(), "Button clicked: ", Toast.LENGTH_LONG).show();
+        }
+    };
+
 }
