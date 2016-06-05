@@ -117,9 +117,87 @@ public class DBConnect {
         }
     }
 
-    public String[] getAllFriends() {
+    public JSONArray getAllFriends(int useridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getAllFriends");
+            jsonObject.put("useridx", useridx);
+            array.put(jsonObject);
 
-        return new String[] { };
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            result.toString().replace("\"", "\\\"");
+            result.insert(0, "{ \"friends\":");
+            result.insert(result.length(), "}");
+
+            JSONObject friends = new JSONObject(result.toString());
+            JSONArray friendsJsonArray = friends.getJSONArray("friends");
+
+            return friendsJsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public JSONArray getSearchedFriends_add(int useridx, String searchKeyword) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getSearchedFriends_add");
+            jsonObject.put("useridx", useridx);
+            jsonObject.put("searchKeyword", searchKeyword);
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            result.toString().replace("\"", "\\\"");
+            result.insert(0, "{ \"friends\":");
+            result.insert(result.length(), "}");
+
+            JSONObject friends = new JSONObject(result.toString());
+            JSONArray friendsJsonArray = friends.getJSONArray("friends");
+
+            return friendsJsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public JSONArray getSearchedFriends_remove(int useridx, String searchKeyword) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getSearchedFriends_remove");
+            jsonObject.put("useridx", useridx);
+            jsonObject.put("searchKeyword", searchKeyword);
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            result.toString().replace("\"", "\\\"");
+            result.insert(0, "{ \"friends\":");
+            result.insert(result.length(), "}");
+
+            JSONObject friends = new JSONObject(result.toString());
+            JSONArray friendsJsonArray = friends.getJSONArray("friends");
+
+            return friendsJsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getNickname(int useridx) {
@@ -142,11 +220,6 @@ public class DBConnect {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public String[] getAllNicknames() {
-
-        return new String[] { };
     }
 
     public int loginValidation(String email, String password) {

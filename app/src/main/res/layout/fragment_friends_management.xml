@@ -19,7 +19,7 @@
         <EditText
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:id="@+id/friend_manger_input"
+            android:id="@+id/friend_manager_input"
             android:inputType="textEmailAddress"
             android:hint="Enter user name or email"
             android:layout_alignParentTop="true"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/friend_manager_list"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/friend_manger_input"
+            android:layout_below="@+id/friend_manager_input"
             android:layout_above="@+id/friend_manager_submit" />
 
         <Button
