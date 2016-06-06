@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * Created by Awesometic on 2016-05-24.
@@ -46,6 +47,58 @@ public class DBConnect {
             jsonObject.put("nickname", nickname);
             jsonObject.put("age", String.valueOf(age));
             jsonObject.put("gender", gender);
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            int resultCode = Integer.parseInt(result.toString());
+
+            return resultCode;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return wrongCode;
+        }
+    }
+
+    public int addFriends(int useridx, ArrayList<String> friendsUseridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "addFriends");
+            jsonObject.put("friendsCount", friendsUseridx.size());
+            jsonObject.put("useridx", useridx);
+            for (int i = 0; i < friendsUseridx.size(); i++) {
+                jsonObject.put("select" + i, friendsUseridx.get(i));
+            }
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            int resultCode = Integer.parseInt(result.toString());
+
+            return resultCode;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return wrongCode;
+        }
+    }
+
+    public int removeFriends(int useridx, ArrayList<String> friendsUseridx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "removeFriends");
+            jsonObject.put("friendsCount", friendsUseridx.size());
+            jsonObject.put("useridx", useridx);
+            for (int i = 0; i < friendsUseridx.size(); i++) {
+                jsonObject.put("select" + i, friendsUseridx.get(i));
+            }
             array.put(jsonObject);
 
             StringBuilder result = new PostClass(jsonObject).execute().get();

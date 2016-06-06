@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/nav_home"
-            android:title="Home" />
-        <item
-            android:id="@+id/nav_setup"
-            android:title="Setup" />
-
         <item android:title="Friend Management">
             <menu>
                 <item
@@ -18,5 +11,11 @@
                     android:title="Remove Friends" />
             </menu>
         </item>
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_setup"
+            android:title="Setup" />
     </group>
 </menu>

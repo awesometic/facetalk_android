@@ -40,7 +40,7 @@
     implements the Checkable interface. Once the root view is checked, any children that
     have the duplicateParentState attribute set will inherit this "checked" state.
 -->
-<CheckableLinearLayout
+<com.example.awesometic.facetalk.CheckableLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -92,4 +92,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-</CheckableLinearLayout>
+</com.example.awesometic.facetalk.CheckableLinearLayout>

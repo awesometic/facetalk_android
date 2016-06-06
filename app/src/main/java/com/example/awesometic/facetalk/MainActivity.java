@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity
     private FriendsFragment fragFriends;
     private SetupFragment fragSetup;
 
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +62,10 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        String[] mDrawerTitles = getFriendList(single.getCurrentUserIdx());
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        updateNavigationView();
 
         // Change nickname and email at navigation header
         View navHeaderView = navigationView.inflateHeaderView(R.layout.nav_header);
@@ -71,12 +73,6 @@ public class MainActivity extends AppCompatActivity
         TextView tvNavHeadEmail = (TextView) navHeaderView.findViewById(R.id.nav_head_email);
         tvNavHeadNick.setText(single.getCurrentUserNickname());
         tvNavHeadEmail.setText(single.getCurrentUserEmail());
-
-        final Menu menu = navigationView.getMenu();
-        final SubMenu subMenu = menu.addSubMenu("Friends: " + dbConn.getFriendCount(single.getCurrentUserIdx()));
-        for (int i = 0; i < mDrawerTitles.length; i++) {
-            subMenu.add(mDrawerTitles[i]);
-        }
     }
 
     @Override
@@ -124,35 +120,27 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_add_friend:
-                Toast.makeText(MainActivity.this, "add friend", Toast.LENGTH_LONG).show();
-
-                getFragmentManager().beginTransaction().detach(fragFriends).attach(fragFriends).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragFriends)
+                        .detach(fragFriends).attach(fragFriends)
                         .commit();
                 break;
             case R.id.nav_remove_friend:
-                Toast.makeText(MainActivity.this, "remove friend", Toast.LENGTH_LONG).show();
-
-                getFragmentManager().beginTransaction().detach(fragFriends).attach(fragFriends).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragFriends)
+                        .detach(fragFriends).attach(fragFriends)
                         .commit();
                 break;
             case R.id.nav_setup:
-                Toast.makeText(MainActivity.this, "setup", Toast.LENGTH_LONG).show();
-
-                getFragmentManager().beginTransaction().detach(fragSetup).attach(fragSetup).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragSetup)
+                        .detach(fragSetup).attach(fragSetup)
                         .commit();
                 break;
             default:
-                Toast.makeText(MainActivity.this, "friend nickname: " + item.getTitle(), Toast.LENGTH_LONG).show();
-
-                getFragmentManager().beginTransaction().detach(fragChat).attach(fragChat).commit();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragChat)
+                        .detach(fragChat).attach(fragChat)
                         .commit();
                 break;
         }
@@ -161,6 +149,8 @@ public class MainActivity extends AppCompatActivity
             setTitle(R.string.app_name);
         else
             setTitle(item.getTitle());
+
+        Toast.makeText(MainActivity.this, "fragment: " + item.getTitle(), Toast.LENGTH_LONG).show();
 
         drawer.closeDrawers();
         return true;
@@ -181,5 +171,19 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void updateNavigationView() {
+        String[] mDrawerTitles = getFriendList(single.getCurrentUserIdx());
+
+        final Menu menu = navigationView.getMenu();
+        menu.clear();
+
+        final SubMenu subMenu = menu.addSubMenu("Friends: " + dbConn.getFriendCount(single.getCurrentUserIdx()));
+        for (int i = 0; i < mDrawerTitles.length; i++) {
+            subMenu.add(mDrawerTitles[i]);
+        }
+
+        navigationView.inflateMenu(R.menu.nav_list_item);
     }
 }
