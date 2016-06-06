@@ -8,23 +8,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="right|bottom">
+        android:layout_gravity="center" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Suwon Univ."
-            android:id="@+id/textView_setup_creater1"
-            android:layout_above="@+id/textView_setup_creater2"
-            android:layout_alignStart="@+id/textView_setup_creater2" />
+            android:id="@+id/textView_main_creater1"
+            android:layout_above="@+id/textView_main_creater2"
+            android:layout_alignStart="@+id/textView_main_creater2" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="11050038 Yang Deokgyu"
-            android:id="@+id/textView_setup_creater2"
+            android:id="@+id/textView_main_creater2"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
@@ -32,10 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Setup Fragment"
-            android:id="@+id/textView_setup"
+            android:text="Main Fragment"
+            android:id="@+id/textView_main"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
-
     </RelativeLayout>
 </FrameLayout>

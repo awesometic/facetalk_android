@@ -5,4 +5,36 @@
     android:layout_height="match_parent"
     tools:context="com.example.awesometic.facetalk.MainActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Suwon Univ."
+            android:id="@+id/textView_chat_creater1"
+            android:layout_above="@+id/textView_chat_creater2"
+            android:layout_alignStart="@+id/textView_chat_creater2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="11050038 Yang Deokgyu"
+            android:id="@+id/textView_chat_creater2"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Chat Fragment"
+            android:id="@+id/textView_chat"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 </FrameLayout>

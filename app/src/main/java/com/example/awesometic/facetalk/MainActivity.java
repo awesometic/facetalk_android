@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
 
     private DrawerLayout drawer;
 
+    private MainFragment fragMain;
     private ChatFragment fragChat;
     private FriendsFragment fragFriends;
     private SetupFragment fragSetup;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Fragments
+        fragMain = MainFragment.newInstance();
         fragChat = ChatFragment.newInstance();
         fragFriends = FriendsFragment.newInstance();
         fragSetup = SetupFragment.newInstance();
@@ -73,6 +75,11 @@ public class MainActivity extends AppCompatActivity
         TextView tvNavHeadEmail = (TextView) navHeaderView.findViewById(R.id.nav_head_email);
         tvNavHeadNick.setText(single.getCurrentUserNickname());
         tvNavHeadEmail.setText(single.getCurrentUserEmail());
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragMain)
+                .detach(fragMain).attach(fragMain)
+                .commit();
     }
 
     @Override
@@ -119,6 +126,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.nav_home:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, fragMain)
+                        .detach(fragMain).attach(fragMain)
+                        .commit();
+                break;
             case R.id.nav_add_friend:
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragFriends)
@@ -149,8 +162,6 @@ public class MainActivity extends AppCompatActivity
             setTitle(R.string.app_name);
         else
             setTitle(item.getTitle());
-
-        Toast.makeText(MainActivity.this, "fragment: " + item.getTitle(), Toast.LENGTH_LONG).show();
 
         drawer.closeDrawers();
         return true;
