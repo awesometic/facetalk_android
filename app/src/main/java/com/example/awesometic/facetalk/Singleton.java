@@ -1,11 +1,5 @@
 package com.example.awesometic.facetalk;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Awesometic on 2016-05-22.
  *
