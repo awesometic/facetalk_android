@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +39,11 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
 
     private MainFragment fragMain;
-    private ChatFragment fragChat;
     private FriendsFragment fragFriends;
     private SetupFragment fragSetup;
 
     private NavigationView navigationView;
+    private SubMenu subMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity
 
         // Fragments
         fragMain = MainFragment.newInstance();
-        fragChat = ChatFragment.newInstance();
         fragFriends = FriendsFragment.newInstance();
         fragSetup = SetupFragment.newInstance();
 
@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             finish();
             return true;
+        } else if (id == R.id.action_exit) {
+            moveTaskToBack(true);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -151,6 +154,21 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 break;
             default:
+                // http://stackoverflow.com/questions/12739909/send-data-from-activity-to-fragment-in-android
+                ChatFragment fragChat = ChatFragment.newInstance();
+                Bundle bundle = new Bundle();
+
+                int index = -1;
+                for (int i = 0; i < subMenu.size(); i++) {
+                    if (subMenu.getItem(i).getTitle().toString().contains(item.getTitle().toString())
+                            && i != subMenu.size() - 1) {
+                        index = Integer.valueOf(subMenu.getItem(i + 1).getTitle().toString().split("::")[1]);
+                        break;
+                    }
+                }
+                bundle.putInt("friendidx", index);
+                fragChat.setArguments(bundle);
+
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragChat)
                         .detach(fragChat).attach(fragChat)
@@ -170,10 +188,12 @@ public class MainActivity extends AppCompatActivity
     private String[] getFriendList(int useridx) {
         try {
             JSONArray jsonArr_friends = dbConn.getFriend(useridx);
+            single.setCurrentFriends(jsonArr_friends);
 
             List<String> list_friends = new ArrayList<>();
             for (int i = 0; i < jsonArr_friends.length(); i++) {
-                list_friends.add(jsonArr_friends.getJSONObject(i).getString("nickname"));
+                JSONObject jsonObj_friend = jsonArr_friends.getJSONObject(i);
+                list_friends.add(jsonObj_friend.getString("nickname") + "::" + jsonObj_friend.getString("idx"));
             }
 
             return list_friends.toArray(new String[list_friends.size()]);
@@ -190,11 +210,13 @@ public class MainActivity extends AppCompatActivity
         final Menu menu = navigationView.getMenu();
         menu.clear();
 
-        final SubMenu subMenu = menu.addSubMenu("Friends: " + dbConn.getFriendCount(single.getCurrentUserIdx()));
+        subMenu = menu.addSubMenu("Friends: " + dbConn.getFriendCount(single.getCurrentUserIdx()));
         for (int i = 0; i < mDrawerTitles.length; i++) {
-            subMenu.add(mDrawerTitles[i]);
+            subMenu.add(mDrawerTitles[i].split("::")[0]);
+            subMenu.add(mDrawerTitles[i]).setVisible(false);
         }
 
+        Toast.makeText(this, subMenu.size() + "", Toast.LENGTH_LONG).show();
         navigationView.inflateMenu(R.menu.nav_list_item);
     }
 }
