@@ -98,19 +98,20 @@ public class ChatFragment extends Fragment {
     }
 
     private void addMessage(String nickname, String message) {
-        RecyclerView.Adapter rvMessageAdapter = new ChatRecyclerViewAdapter(getActivity(), messages);
-        rvMessage.setAdapter(rvMessageAdapter);
-
         messages.add(new ChatRecyclerViewItem.Builder()
                 .setNickname(nickname).setMessage(message)
                 .build());
-        rvMessageAdapter.notifyItemInserted(messages.size() - 1);
+
+        RecyclerView.Adapter rvMessageAdapter = new ChatRecyclerViewAdapter(getActivity(), messages);
+        rvMessage.setAdapter(rvMessageAdapter);
+        rvMessageAdapter.notifyItemInserted(messages.size());
     }
 
     private void attemptSend() {
         String message = etMessage.getText().toString().trim();
         if (TextUtils.isEmpty(message)) {
             etMessage.requestFocus();
+            refreshMessage();
             return;
         }
 
