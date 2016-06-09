@@ -10,31 +10,38 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" >
 
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_message"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Suwon Univ."
-            android:id="@+id/textView_chat_creater1"
-            android:layout_above="@+id/textView_chat_creater2"
-            android:layout_alignStart="@+id/textView_chat_creater2" />
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_above="@+id/editText_message"
+            android:layout_alignParentTop="true" />
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="11050038 Yang Deokgyu"
-            android:id="@+id/textView_chat_creater2"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:id="@+id/editText_message"
+            android:hint="Message"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/button_send_message" />
 
-        <TextView
+        <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Chat Fragment"
-            android:id="@+id/textView_chat"
+            android:text=">"
+            android:id="@+id/button_send_message"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
+
     </RelativeLayout>
+
 </FrameLayout>

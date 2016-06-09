@@ -115,9 +115,32 @@ public class DBConnect {
         }
     }
 
-    public String[] getMessages() {
+    public JSONArray getMessage(int useridx, int friendidx) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "getMessage");
+            jsonObject.put("useridx", useridx);
+            jsonObject.put("friendidx", friendidx);
+            array.put(jsonObject);
 
-        return new String[] { };
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            result.toString().replace("\"", "\\\"");
+            result.insert(0, "{ \"message\":");
+            result.insert(result.length(), "}");
+
+            JSONObject message = new JSONObject(result.toString());
+            JSONArray messageJsonArray = message.getJSONArray("message");
+
+            return messageJsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // http://stackoverflow.com/questions/34784394/android-parse-php-json-encode-to-java

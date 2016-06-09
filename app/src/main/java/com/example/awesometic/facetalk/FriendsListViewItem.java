@@ -5,18 +5,18 @@ package com.example.awesometic.facetalk;
  * http://recipes4dev.tistory.com/43
  */
 public class FriendsListViewItem {
-    private String titleStr;
-    private String descStr;
+    private String title;
+    private String desc;
 
-    public FriendsListViewItem(String title, String desc) {
-        titleStr = title;
-        descStr = desc;
+    public FriendsListViewItem(String _title, String _desc) {
+        this.title = _title;
+        this.desc = _desc;
     }
 
     public String getTitle() {
-        return this.titleStr ;
+        return this.title ;
     }
     public String getDesc() {
-        return this.descStr ;
+        return this.desc ;
     }
 }

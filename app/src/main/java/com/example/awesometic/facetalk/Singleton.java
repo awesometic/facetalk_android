@@ -2,6 +2,7 @@ package com.example.awesometic.facetalk;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,13 @@ public class Singleton {
     private int currentUserIdx;
     private String currentUserEmail;
     private String currentUserNickname;
+    private JSONArray currentFriends;
 
     private Singleton() {
         currentUserIdx = 0;
         currentUserEmail = "";
         currentUserNickname = "";
+        currentFriends = null;
     }
 
     public static Singleton getInstance(){
@@ -48,6 +51,10 @@ public class Singleton {
         return currentUserNickname;
     }
 
+    protected JSONArray getCurrentFriends() {
+        return currentFriends;
+    }
+
     protected void setCurrentUserIdx(int newIdx) {
         currentUserIdx = newIdx;
     }
@@ -58,5 +65,27 @@ public class Singleton {
 
     protected void setCurrentUserNickname(String newNickname) {
         currentUserNickname = newNickname;
+    }
+
+    protected void setCurrentFriends(JSONArray newFriendsList) {
+        currentFriends = newFriendsList;
+    }
+
+    /* Other functions */
+    public JSONObject getFriendInfo(int friendidx) {
+        try {
+            JSONObject jsonObj_friendInfo = null;
+
+            for (int i = 0; i < getCurrentFriends().length(); i++) {
+                if (Integer.valueOf(getCurrentFriends().getJSONObject(i).getString("idx")) == friendidx) {
+                    jsonObj_friendInfo = getCurrentFriends().getJSONObject(i);
+                }
+            }
+
+            return jsonObj_friendInfo;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
