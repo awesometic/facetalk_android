@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 public class SignupActivity extends AppCompatActivity {
 
-    final static String LogTag = "Awe_SignupActivity";
-    private Singleton single = Singleton.getInstance();
     private DBConnect dbConn = new DBConnect(SignupActivity.this, SignupActivity.this);
 
     EditText emailInput, passwordInput, nicknameInput, ageInput;

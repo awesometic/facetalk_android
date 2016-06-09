@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class FriendsFragment extends Fragment {
 
-    final static String LogTag = "Awe_FriendFragment";
     private Singleton single = Singleton.getInstance();
     private DBConnect dbConn = new DBConnect(getActivity(), getActivity());
 

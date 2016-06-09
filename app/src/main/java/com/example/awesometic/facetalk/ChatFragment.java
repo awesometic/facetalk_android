@@ -1,15 +1,17 @@
 package com.example.awesometic.facetalk;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,16 +25,15 @@ import java.util.List;
  */
 public class ChatFragment extends Fragment {
 
-    final static String LogTag = "Awe_ChatFragment";
     private Singleton single = Singleton.getInstance();
     private DBConnect dbConn = new DBConnect(getActivity(), getActivity());
 
     private List<ChatRecyclerViewItem> messages = new ArrayList<>();
+    private LinearLayoutManager linearLayoutManager;
 
     private RecyclerView rvMessage;
     private Button btnSend;
     private EditText etMessage;
-    private RecyclerView.Adapter rvMessageAdapter;
 
     private int useridx;
     private int friendidx;
@@ -45,13 +46,6 @@ public class ChatFragment extends Fragment {
     public ChatFragment() { }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        rvMessageAdapter = new ChatRecyclerViewAdapter(context, messages);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -61,21 +55,34 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        http://stackoverflow.com/questions/26580723/how-to-scroll-to-the-bottom-of-a-recyclerview-scrolltoposition-doesnt-work
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
         rvMessage = (RecyclerView) rootView.findViewById(R.id.recyclerView_message);
-        rvMessage.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvMessage.setAdapter(rvMessageAdapter);
+        rvMessage.setLayoutManager(linearLayoutManager);
         btnSend = (Button) rootView.findViewById(R.id.button_send_message);
+        btnSend.setOnClickListener(mClickListener);
         etMessage = (EditText) rootView.findViewById(R.id.editText_message);
+        etMessage.setOnKeyListener(mKeyUpListener);
+        etMessage.requestFocus();
 
         useridx = single.getCurrentUserIdx();
         friendidx = getArguments().getInt("friendidx");
 
+        refreshMessage();
+
+        return rootView;
+    }
+
+    private void refreshMessage() {
         try {
+            messages.clear();
+
             JSONArray jsonArr_messages = dbConn.getMessage(useridx, friendidx);
             String nickname;
             String message;
 
-            for (int i = 0; i < jsonArr_messages.length(); i++) {
+            for (int i = (jsonArr_messages.length() - 1); i >= 0; i--) {
                 if (jsonArr_messages.getJSONObject(i).getString("user").equals(String.valueOf(single.getCurrentUserIdx()))) {
                     nickname = single.getCurrentUserNickname();
                 } else {
@@ -88,23 +95,50 @@ public class ChatFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     private void addMessage(String nickname, String message) {
+        RecyclerView.Adapter rvMessageAdapter = new ChatRecyclerViewAdapter(getActivity(), messages);
+        rvMessage.setAdapter(rvMessageAdapter);
+
         messages.add(new ChatRecyclerViewItem.Builder()
                 .setNickname(nickname).setMessage(message)
                 .build());
         rvMessageAdapter.notifyItemInserted(messages.size() - 1);
-        scrollToBottom();
     }
 
-    private void scrollToBottom() {
-        rvMessage.scrollToPosition(rvMessageAdapter.getItemCount() - 1);
+    private void attemptSend() {
+        String message = etMessage.getText().toString().trim();
+        if (TextUtils.isEmpty(message)) {
+            etMessage.requestFocus();
+            return;
+        }
+
+        if (dbConn.addMessage(useridx, friendidx, message) == 1) {
+            etMessage.setText("");
+            addMessage(single.getCurrentUserNickname(), message);
+
+            refreshMessage();
+        } else {
+            Toast.makeText(getActivity(), "Add message to server fail!", Toast.LENGTH_LONG).show();
+        }
     }
+
+    Button.OnClickListener mClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            attemptSend();
+        }
+    };
+
+    EditText.OnKeyListener mKeyUpListener = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                attemptSend();
+                return true;
+            }
+            else
+                return false;
+        }
+    };
 }

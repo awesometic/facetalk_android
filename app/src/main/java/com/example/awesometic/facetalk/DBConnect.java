@@ -115,6 +115,30 @@ public class DBConnect {
         }
     }
 
+    public int addMessage(int useridx, int friendidx, String message) {
+        try {
+            JSONArray array = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("callSign", "addMessage");
+            jsonObject.put("useridx", useridx);
+            jsonObject.put("friendidx", friendidx);
+            jsonObject.put("message", message);
+            array.put(jsonObject);
+
+            StringBuilder result = new PostClass(jsonObject).execute().get();
+            int resultCode = Integer.parseInt(result.toString());
+
+            return resultCode;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return wrongCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return wrongCode;
+        }
+    }
+
     public JSONArray getMessage(int useridx, int friendidx) {
         try {
             JSONArray array = new JSONArray();

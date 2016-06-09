@@ -26,7 +26,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    final static String LogTag = "Awe_MainActivity";
     private Singleton single = Singleton.getInstance();
     private DBConnect dbConn = new DBConnect(MainActivity.this, MainActivity.this);
 
