@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private SubMenu subMenu;
 
+    private BackPressCloseHandler backPressCloseHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Close when press back button twice
+        backPressCloseHandler = new BackPressCloseHandler(this);
 
         // Fragments
         fragMain = MainFragment.newInstance();
@@ -88,7 +93,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            // super.onBackPressed();
+            backPressCloseHandler.onBackPressed();
         }
     }
 
@@ -216,7 +222,6 @@ public class MainActivity extends AppCompatActivity
             subMenu.add(mDrawerTitles[i]).setVisible(false);
         }
 
-        Toast.makeText(this, subMenu.size() + "", Toast.LENGTH_LONG).show();
         navigationView.inflateMenu(R.menu.nav_list_item);
     }
 }
